@@ -147,7 +147,8 @@ function buildArcade() {
     <div class="tabs"><button class="tab on" data-t="snake">🐍 Snake</button><button class="tab" data-t="click">💰 Commission Clicker</button></div>
     <div id="a-snake" class="arc">
       <canvas id="sn" width="360" height="240"></canvas>
-      <div class="arc-hud"><b>Score: <span id="sn-score">0</span></b> <button class="btn" id="sn-play">Play (Arrow keys / WASD)</button></div>
+      <div class="arc-hud"><b>Score: <span id="sn-score">0</span></b> <button class="btn" id="sn-play">Play (Arrow keys / WASD / swipe)</button></div>
+      <div class="dpad"><button data-d="0,-1">▲</button><button data-d="-1,0">◀</button><button data-d="1,0">▶</button><button data-d="0,1">▼</button></div>
     </div>
     <div id="a-click" class="arc hidden">
       <button id="cl-btn" class="clicker">💰</button>
@@ -160,6 +161,14 @@ function buildArcade() {
     $('#a-click').classList.toggle('hidden', t.dataset.t !== 'click');
   });
   $('#sn-play').onclick = startSnake;
+  $$('.dpad button', win.arcade).forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); const [x, y] = b.dataset.d.split(',').map(Number); turnSnake(x, y); }));
+  let sw = null; const sn = $('#sn');
+  sn.addEventListener('pointerdown', e => { sw = { x: e.clientX, y: e.clientY }; });
+  sn.addEventListener('pointerup', e => {
+    if (!sw) return; const dx = e.clientX - sw.x, dy = e.clientY - sw.y; sw = null;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return;
+    if (Math.abs(dx) > Math.abs(dy)) turnSnake(Math.sign(dx), 0); else turnSnake(0, Math.sign(dy));
+  });
   $('#cl-btn').onclick = () => { clickerBank += 1; progress('click', 1); G.slack += 0.15; sfx.click(); paintClicker(); };
   $('#cl-buy').onclick = () => { if (clickerBank >= 25) { clickerBank -= 25; interns++; sfx.good(); paintClicker(); } };
   drawSnake();
@@ -167,6 +176,9 @@ function buildArcade() {
 function paintClicker() { $('#cl-bank').textContent = Math.floor(clickerBank); $('#cl-int').textContent = interns; }
 
 const COLS = 24, ROWS = 16, CELL = 15;
+function turnSnake(x, y) {
+  if (snake && !snake.dead && (x !== -snake.dir.x || y !== -snake.dir.y)) snake.next = { x, y };
+}
 function startSnake() {
   snake = { body: [{ x: 8, y: 8 }, { x: 7, y: 8 }, { x: 6, y: 8 }], dir: { x: 1, y: 0 }, next: { x: 1, y: 0 }, food: null, score: 0, t: 0, dead: false };
   placeFood(); $('#sn-score').textContent = 0; drawSnake();
@@ -394,10 +406,7 @@ export function handleKey(e) {
     const k = e.key.toLowerCase();
     const map = { arrowup: [0, -1], w: [0, -1], arrowdown: [0, 1], s: [0, 1], arrowleft: [-1, 0], a: [-1, 0], arrowright: [1, 0], d: [1, 0] };
     const m = map[k];
-    if (m) {
-      if (m[0] !== -snake.dir.x || m[1] !== -snake.dir.y) snake.next = { x: m[0], y: m[1] };
-      e.preventDefault(); return true;
-    }
+    if (m) { turnSnake(m[0], m[1]); e.preventDefault(); return true; }
   }
   return false;
 }

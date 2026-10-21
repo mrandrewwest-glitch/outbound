@@ -211,6 +211,18 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && G.r
 addEventListener('resize', () => world.resize());
 $('#btn-lean-back').onclick = () => leaveScreen();
 
+// ---- touch controls (phones/tablets) ----
+const isTouch = matchMedia('(pointer: coarse)').matches;
+document.body.classList.toggle('touch', isTouch);
+const tap = (id, fn) => $(id).addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); if (G.running && !G.paused) fn(); });
+tap('#t-crm', () => { sfx.click(); showApp('crm'); if (G.mode === 'look') enterScreen(); });
+tap('#t-answer', () => callKey('a'));
+tap('#t-lean', () => enterScreen());
+tap('#t-todo', () => $('#todo').classList.toggle('open'));
+$('#minicall').addEventListener('pointerdown', e => { e.stopPropagation(); if (call && call.phase === 'ringing') callKey('a'); else enterScreen(); });
+// iOS only unlocks audio inside a user gesture
+addEventListener('pointerdown', () => initAudio(), { once: true });
+
 function togglePause() {
   G.paused = !G.paused;
   $('#pause').classList.toggle('hidden', !G.paused);
@@ -245,6 +257,7 @@ function updateHud() {
   setMirror(boss.x - PLAYER.x, r.state);
   $('#h-day').style.width = ((G.clock - SHIFT_START) / (SHIFT_END - SHIFT_START) * 100) + '%';
   document.body.classList.toggle('drunk', G.drunk > 4);
+  document.body.classList.toggle('ringing', !!(call && call.phase === 'ringing'));
 }
 
 // ---------------------------------------------------------------- loop
