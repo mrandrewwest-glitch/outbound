@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Dial Tone — The Office Slacker Sim</title>
+<meta name="description" content="Take calls, dodge the boss, and get absolutely nothing done. A 3D office game for outbound sales teams.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📞</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mode-look">
+<canvas id="c"></canvas>
+<div id="labels"></div>
+<div id="flash"></div>
+<div id="toasts"></div>
+
+<!-- ============ HUD ============ -->
+<div id="hud" class="hidden">
+  <div class="top">
+    <div class="pill"><span>🕘</span><b id="h-clock">9:00 AM</b></div>
+    <div class="pill" title="Strikes — 3 and you're fired"><span>Strikes</span><b id="h-strikes">▫️▫️▫️</b></div>
+    <div class="pill" title="Sales vs quota"><span>Sales</span><b id="h-sales">0/4</b></div>
+    <div class="pill" title="Slack score"><span>Slack</span><b id="h-slack">0</b></div>
+    <div class="pill"><span>Objectives</span><b id="h-tasks">0/0</b></div>
+    <div id="h-boss" class="pill boss office">👔 In his office</div>
+  </div>
+  <div id="day"><i id="h-day"></i></div>
+
+  <aside id="todo"><h4>🤫 Secret To-Do</h4><ul id="todo-list"></ul></aside>
+
+  <div id="alert">👀 BOSS IS WATCHING — hit <kbd>Q</kbd> and get on the CRM!</div>
+  <div id="susp-wrap"><small>SUSPICION</small><div><i id="susp"></i></div></div>
+  <div id="minicall" class="hidden"></div>
+  <div id="crosshair"></div>
+  <div id="hotbar"></div>
+  <div id="hint"></div>
+  <button id="btn-lean-back" class="btn">⬅ Lean back (Esc)</button>
+  <div id="busted"><h2>BUSTED!</h2><p></p><small></small></div>
+</div>
+
+<!-- ============ PC overlay ============ -->
+<div id="pc">
+  <div class="monitor">
+    <div class="screen">
+      <div id="workspace">
+        <aside id="phone"></aside>
+      </div>
+      <div id="taskbar">
+        <div id="taskbar-apps"></div>
+        <div id="mirror" title="Reflection in the monitor: where is the boss?"><span>🪞</span><div class="strip"><i id="mirror-dot"></i></div></div>
+        <div id="tclock">9:00 AM</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Title ============ -->
+<div id="title" class="overlay">
+  <div class="panel">
+    <div class="logo">📞</div>
+    <h1>DIAL TONE</h1>
+    <p class="tag-line">The Office Slacker Sim — outbound sales edition</p>
+    <ul class="how">
+      <li>☎️ <b>Take calls.</b> Pick your pitch, dodge Angry Ron, close the sale.</li>
+      <li>🤫 <b>Do everything but work.</b> Tick off your Secret To-Do: videos, games, swiping, shopping…</li>
+      <li>👔 <b>Watch the boss.</b> When he's near, hit <kbd>Q</kbd> to flip to the CRM. Three busts and you're fired.</li>
+      <li>🗑️ <b>Look around.</b> Drag to look. Throw paper at the bin, annoy coworkers, raid the drawer.</li>
+    </ul>
+    <label class="opt"><input type="checkbox" id="opt-edgy"> <span><b>🌶️ Spicy mode</b> — edgier jokes, swearing &amp; cheeky 18+ humour. Off by default; maybe not while the boss is watching the screen share.</span></label>
+    <label class="opt"><input type="checkbox" id="opt-sound" checked> <span>🔊 Sound</span></label>
+    <button id="btn-start" class="btn big good">Clock in ▶</button>
+    <p class="small" id="best"></p>
+    <p class="small">Mouse: drag to look, click things. Keys: <kbd>E</kbd> lean in • <kbd>Esc</kbd> lean back • <kbd>Q</kbd> panic to CRM • <kbd>1-3</kbd> reply • <kbd>H</kbd> hold • <kbd>Space</kbd> answer • <kbd>P</kbd> pause</p>
+  </div>
+</div>
+
+<!-- ============ End ============ -->
+<div id="end" class="overlay hidden">
+  <div class="panel">
+    <h2 id="end-title"></h2>
+    <p id="end-sub"></p>
+    <ul id="end-stats" class="stats"></ul>
+    <p id="end-best" class="small"></p>
+    <button id="btn-copy" class="btn">📋 Copy score for the team chat</button>
+    <button id="btn-again" class="btn big good">Another shift ▶</button>
+  </div>
+</div>
+
+<div id="pause" class="overlay hidden"><div class="panel"><h2>Paused</h2><p>The boss is frozen in time. For now.</p><button id="btn-resume" class="btn big good">Resume</button></div></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
