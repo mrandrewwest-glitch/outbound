@@ -30,7 +30,7 @@ kbd { background: #2a3347; border: 1px solid #3b4660; border-bottom-width: 2px; 
 
 /* ---- overlays ---- */
 .overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(8,10,16,.82); z-index: 50; padding: 12px; }
-.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px 28px; max-width: 560px; width: 100%; max-height: 96vh; overflow: auto; box-shadow: 0 20px 60px rgba(0,0,0,.5); text-align: center; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px 28px; max-width: 560px; width: 100%; max-height: calc(var(--vh, 1vh) * 96); overflow: auto; box-shadow: 0 20px 60px rgba(0,0,0,.5); text-align: center; }
 .logo { font-size: 54px; line-height: 1; }
 h1 { margin: 6px 0 0; font-size: 44px; letter-spacing: .14em; }
 .tag-line { color: var(--muted); margin-top: 4px; }
@@ -100,8 +100,8 @@ body.mode-screen #btn-lean-back { display: block; }
 #pc { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 20; pointer-events: none; opacity: 0; transition: opacity .12s; }
 #pc.show { opacity: 1; }
 #pc.show .monitor { pointer-events: auto; }
-.monitor { height: min(82vh, 52vw); aspect-ratio: 16 / 9; background: #0a0c10; border: 10px solid #1b1e25; border-radius: 12px; box-shadow: 0 0 0 2px #333a47, 0 20px 80px rgba(0,0,0,.6); padding: 0; overflow: hidden; }
-.screen { width: 100%; height: 100%; display: flex; flex-direction: column; background: linear-gradient(135deg, #14305a, #0f1c33 60%, #1c1030); font-size: clamp(10px, 1.55vh, 15px); color: #1c2230; }
+.monitor { height: min(calc(var(--vh, 1vh) * 82), 52vw); aspect-ratio: 16 / 9; background: #0a0c10; border: 10px solid #1b1e25; border-radius: 12px; box-shadow: 0 0 0 2px #333a47, 0 20px 80px rgba(0,0,0,.6); padding: 0; overflow: hidden; }
+.screen { width: 100%; height: 100%; display: flex; flex-direction: column; background: linear-gradient(135deg, #14305a, #0f1c33 60%, #1c1030); font-size: clamp(10px, calc(var(--vh, 1vh) * 1.55), 15px); color: #1c2230; }
 #workspace { flex: 1; display: flex; min-height: 0; padding: .6em; gap: .6em; position: relative; }
 .window { display: none; flex: 1; min-width: 0; background: #f4f6fb; border-radius: .6em; overflow: auto; flex-direction: column; box-shadow: 0 4px 18px rgba(0,0,0,.4); }
 .window.active { display: flex; }
@@ -170,7 +170,7 @@ table.leads { width: 100%; border-collapse: collapse; background: #fff; border-r
 .nt-foot { display: flex; justify-content: space-between; align-items: center; padding: 0 .8em .8em; color: #62708f; }
 
 @media (max-width: 760px) {
-  .monitor { height: min(60vh, 56vw); border-width: 6px; }
+  .monitor { height: min(calc(var(--vh, 1vh) * 60), 56vw); border-width: 6px; }
   #todo { display: none; }
   h1 { font-size: 34px; }
 }
@@ -195,8 +195,8 @@ body.touch #minicall { pointer-events: auto; }
 body.touch .btn, body.touch .tb-btn, body.touch .opt { touch-action: manipulation; }
 @media (pointer: coarse) and (orientation: portrait) { #rotate { display: flex; } }
 @media (pointer: coarse) and (max-height: 520px) {
-  .monitor { height: min(88vh, 50vw); border-width: 5px; border-radius: 8px; }
-  .screen { font-size: clamp(11px, 2.7vh, 15px); }
+  .monitor { height: min(calc(var(--vh, 1vh) * 88), 50vw); border-width: 5px; border-radius: 8px; }
+  .screen { font-size: clamp(11px, calc(var(--vh, 1vh) * 2.7), 15px); }
   #phone { width: 36%; }
   .pill { font-size: 11px; padding: 2px 8px; }
   #hud .top { top: 4px; gap: 4px; }
@@ -215,4 +215,49 @@ body.touch .btn, body.touch .tb-btn, body.touch .opt { touch-action: manipulatio
   .tb-btn span { display: none; }
   #btn-lean-back { bottom: auto; top: 30px; left: 8px; padding: 4px 8px; font-size: 12px; }
   #mirror .strip { width: 5em; }
+}
+
+/* ---- iPhone landscape: use the real visible height, respect the notch, give the PC the whole screen ---- */
+body.touch #hud, body.touch #pc { left: env(safe-area-inset-left); right: env(safe-area-inset-right); }
+@media (pointer: coarse) {
+  :root { --strip: 24px; }
+  #pc { padding-top: var(--strip); align-items: stretch; }
+  .monitor { width: 100%; height: 100%; aspect-ratio: auto; border: 0; border-radius: 0; box-shadow: none; }
+  .screen { font-size: clamp(9px, calc(var(--vh, 1vh) * 3.6), 14px); }
+  #workspace { padding: .35em; gap: .35em; }
+  .win-title { padding: .3em .6em; }
+  #phone { width: 38%; padding: .45em; gap: .35em; }
+  .ph-say { min-height: 0; }
+  #taskbar { height: 2.4em; }
+  .crm { padding: .5em; gap: .45em; } .crm-stats div { padding: .3em .5em; }
+  body.mode-screen #touch { display: none; }
+  #hud .top { top: 2px; gap: 4px; flex-wrap: nowrap; }
+  .pill { font-size: 10px; padding: 1px 8px; white-space: nowrap; }
+  #h-boss { display: none; }
+  #day { height: 2px; }
+  #btn-lean-back { top: 2px; bottom: auto; left: 4px; padding: 1px 8px; font-size: 10px; z-index: 30; }
+  #alert { top: calc(var(--strip) + 2px); font-size: 11px; padding: 4px 8px; }
+  #susp-wrap { bottom: 62px; }
+  #minicall { top: calc(var(--strip) + 2px); font-size: 11px; }
+  body.touch #touch { right: 6px; bottom: 6px; gap: 6px; }
+  body.touch #touch .tbtn { width: 46px; height: 46px; font-size: 18px; border-radius: 12px; }
+  body.touch #touch .tbtn small { font-size: 8px; margin-top: -6px; }
+  .slot { width: 46px; padding: 2px 0; } .slot span { font-size: 16px; } .slot small { display: none; } .slot kbd { display: none; }
+  #hotbar { bottom: 6px; left: 6px; transform: none; gap: 5px; }
+  #toasts { bottom: 6px; right: 60px; } .toast { font-size: 11px; padding: 4px 8px; }
+  body.touch #todo { top: var(--strip); left: 4px; width: 230px; font-size: 11px; }
+  .panel { padding: 12px 16px; } .how { display: none; } h1 { font-size: 26px; margin: 0; } .logo { font-size: 26px; }
+  .tb-btn span { display: none; }
+  #mirror .strip { width: 4.5em; }
+}
+.touch-only { display: none; } body.touch .touch-only { display: block; }
+
+/* very short viewports (iPhone Safari with both toolbars showing) */
+@media (pointer: coarse) and (max-height: 260px) {
+  .ph-meters small, .ph-caller small, .ph-head { display: none; }
+  .ph-meters { grid-template-columns: repeat(3, 1fr); gap: .3em; }
+  #ph-emoji { font-size: 1.5em; }
+  .crm-stats { display: none; }
+  #phone .opt { padding: .3em .5em; }
+  .ph-actions .btn { padding: .2em .5em; }
 }

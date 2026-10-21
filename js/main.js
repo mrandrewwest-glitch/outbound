@@ -208,7 +208,12 @@ addEventListener('keydown', e => {
 addEventListener('keyup', e => held.delete(e.key.toLowerCase()));
 addEventListener('blur', () => { held.clear(); if (G.running && !G.paused) togglePause(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && G.running && !G.paused) togglePause(); });
-addEventListener('resize', () => world.resize());
+// iOS Safari: 100vh includes the hidden toolbars, so size everything from the real visible height
+const setVh = () => { document.documentElement.style.setProperty('--vh', (window.innerHeight / 100) + 'px'); world.resize(); };
+setVh();
+addEventListener('resize', setVh);
+addEventListener('orientationchange', () => setTimeout(setVh, 250));
+window.visualViewport?.addEventListener('resize', setVh);
 $('#btn-lean-back').onclick = () => leaveScreen();
 
 // ---- touch controls (phones/tablets) ----

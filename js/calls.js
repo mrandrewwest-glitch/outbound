@@ -266,9 +266,9 @@ function paint() {
   mini.classList.remove('hidden');
   const a = ARCH[call.arch];
   let txt;
-  if (call.phase === 'ringing') txt = `🔔 ${call.name} is calling! Press SPACE to answer`;
+  if (call.phase === 'ringing') txt = `🔔 ${call.name} is calling! ${document.body.classList.contains('touch') ? 'tap 📞 to answer' : 'Press SPACE to answer'}`;
   else if (call.phase === 'dialing') txt = `📞 Dialling ${call.name}...`;
-  else if (call.phase === 'talk') txt = `${a.emoji} ${call.name}: reply in ${Math.max(0, Math.ceil(call.timer))}s (lean in with E)`;
+  else if (call.phase === 'talk') txt = `${a.emoji} ${call.name}: reply in ${Math.max(0, Math.ceil(call.timer))}s (${document.body.classList.contains('touch') ? 'tap 🖥 to lean in' : 'lean in with E'})`;
   else txt = `${a.emoji} ${call.line}`;
   mini.textContent = txt;
 }
